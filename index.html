@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+    <title>Image Particles Trick</title>
+  </head>
+  <body>
+    <canvas></canvas>
+
+    <script>
+      var canvas = document.querySelector("canvas");
+      var ctx = canvas.getContext("2d");
+      let particles = [];
+      let mouse = { x: 500, y: 50, radius: 200 };
+
+      //   onmousemove = (e) => {
+      //     mouse.x = e.clientX;
+      //     mouse.y = e.clientY;
+      //   };
+
+      class Particle {
+        constructor(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.size = 2;
+          this.baseX = x;
+          this.baseY = y;
+          this.color = color;
+          this.density = Math.random() * 10;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.fillStyle = this.color;
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fill();
+          ctx.closePath();
+        }
+
+        update(mouse) {
+          let distX = mouse.x - this.x;
+          let distY = mouse.y - this.y;
+          let distance = Math.sqrt(distX * distX + distY * distY);
+          let maxDistance = mouse.radius;
+          let force = (maxDistance - distance) / maxDistance;
+
+          let dirX = distX / distance;
+          let dirY = distY / distance;
+          dirX *= force * this.density;
+          dirY *= force * this.density;
+
+          if (distance < maxDistance) {
+            this.x -= dirX;
+            this.y -= dirY;
+          } else {
+            if (this.x != this.baseX) {
+              let dx = this.baseX - this.x;
+              this.x += dx / 10;
+            }
+            if (this.y != this.baseY) {
+              let dy = this.baseY - this.y;
+              this.y += dy / 10;
+            }
+          }
+        }
+      }
+
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      let image = new Image();
+      image.src = "trumpvsbiden.jpeg";
+
+      image.onload = () => {
+        console.log("image loaded!");
+
+        var hRatio = canvas.width / image.width;
+        var vRatio = canvas.height / image.height;
+        var ratio = Math.min(hRatio, vRatio);
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          image.width,
+          image.height,
+          0,
+          0,
+          image.width * ratio,
+          image.height * ratio
+        );
+        // ctx.strokeStyle = "red";
+        // ctx.strokeRect(100, 20, 70, 100);
+        let imgData = ctx.getImageData(100, 20, 200, 200);
+        ctx.clearRect(100, 20, 70, 100);
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(imgData);
+
+        init(imgData);
+        setTimeout(() => moveMouse(), 2000);
+      };
+
+      function init(imgData) {
+        for (let x = 0, x2 = imgData.width; x < x2; x++) {
+          for (let y = 0, y2 = imgData.height; y < y2; y++) {
+            if (imgData.data[y * 4 * imgData.width + x * 4 + 3] > 128) {
+              let posX = x + 100;
+              let posY = y + 20;
+              let color = `rgb(${imgData.data[y * 4 * imgData.width + x * 4]},${
+                imgData.data[y * 4 * imgData.width + x * 4 + 1]
+              },${imgData.data[y * 4 * imgData.width + x * 4 + 2]})`;
+              console.log(color);
+              particles.push(new Particle(posX, posY, color));
+            }
+          }
+        }
+        console.log(particles);
+      }
+
+      window.onresize = (e) => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0);
+      };
+
+      function animation() {
+        // ctx.fillStyle = "black";
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        var hRatio = canvas.width / image.width;
+        var vRatio = canvas.height / image.height;
+        var ratio = Math.min(hRatio, vRatio);
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          image.width,
+          image.height,
+          0,
+          0,
+          image.width * ratio,
+          image.height * ratio
+        );
+
+        ctx.fillStyle = "white";
+        ctx.font = "48px Verdana";
+        ctx.fillText("Happy Bday", 25, 400);
+        ctx.fillText("Brotha", 55, 500);
+
+        // ctx.clearRect(100, 20, 70, 100);
+
+        particles.forEach((particle) => {
+          particle.draw();
+          particle.update(mouse);
+        });
+
+        requestAnimationFrame(animation);
+      }
+
+      animation();
+
+      function moveMouse() {
+        for (let i = 750; i > -25; i--) {
+          setTimeout(() => {
+            mouse.x = 550 - i;
+            console.log(i);
+            // if (i == 550) {
+            //   console.log("Set mouse to -50000");
+            //   mouse.x = -50000;
+            // }
+          }, i * 20);
+        }
+        mouse.x = -5000;
+      }
+    </script>
+  </body>
+</html>
