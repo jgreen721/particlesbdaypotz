@@ -20,7 +20,7 @@
       var canvas = document.querySelector("canvas");
       var ctx = canvas.getContext("2d");
       let particles = [];
-      let mouse = { x: 500, y: 50, radius: 200 };
+      let mouse = { x: 400, y: 50, radius: 200 };
 
       //   onmousemove = (e) => {
       //     mouse.x = e.clientX;
@@ -107,7 +107,7 @@
         console.log(imgData);
 
         init(imgData);
-        setTimeout(() => moveMouse(), 2000);
+        // setTimeout(() => moveMouse(), 2000);
       };
 
       function init(imgData) {
@@ -119,12 +119,12 @@
               let color = `rgb(${imgData.data[y * 4 * imgData.width + x * 4]},${
                 imgData.data[y * 4 * imgData.width + x * 4 + 1]
               },${imgData.data[y * 4 * imgData.width + x * 4 + 2]})`;
-              console.log(color);
+              //   console.log(color);
               particles.push(new Particle(posX, posY, color));
             }
           }
         }
-        console.log(particles);
+        // console.log(particles);
       }
 
       window.onresize = (e) => {
@@ -136,7 +136,23 @@
         ctx.drawImage(image, 0, 0);
       };
 
-      function animation() {
+      let lastTime = 0;
+      let interval = 0;
+
+      function animation(time = 0) {
+        let dt = time - lastTime;
+
+        lastTime = time;
+
+        // console.log(dt);
+        interval += dt;
+        // console.log("interval", interval);
+        if (interval > 20) {
+          interval = 0;
+          mouse.x--;
+          console.log(mouse.x);
+        }
+
         // ctx.fillStyle = "black";
         // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -172,19 +188,18 @@
 
       animation();
 
-      function moveMouse() {
-        for (let i = 750; i > -25; i--) {
-          setTimeout(() => {
-            mouse.x = 550 - i;
-            console.log(i);
-            // if (i == 550) {
-            //   console.log("Set mouse to -50000");
-            //   mouse.x = -50000;
-            // }
-          }, i * 20);
-        }
-        mouse.x = -5000;
-      }
+      //   function moveMouse() {
+      //     for (let i = 750; i > -25; i--) {
+      //       setTimeout(() => {
+      //         mouse.x = 550 - i;
+      //         console.log(i);
+      //         // if (i == 550) {
+      //         //   console.log("Set mouse to -50000");
+      //         //   mouse.x = -50000;
+      //         // }
+      //       }, i * 20);
+      //     }
+      //   }
     </script>
   </body>
 </html>
