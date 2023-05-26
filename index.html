@@ -139,6 +139,11 @@
       let lastTime = 0;
       let interval = 0;
 
+      ctx.fillStyle = "white";
+      ctx.font = "48px Verdana";
+      ctx.fillText("Happy Bday", 25, 500);
+      ctx.fillText("Brotha", 55, 600);
+
       function animation(time = 0) {
         let dt = time - lastTime;
 
@@ -153,28 +158,20 @@
           console.log(mouse.x);
         }
 
-        // ctx.fillStyle = "black";
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        var hRatio = canvas.width / image.width;
-        var vRatio = canvas.height / image.height;
-        var ratio = Math.min(hRatio, vRatio);
-        ctx.drawImage(
-          image,
-          0,
-          0,
-          image.width,
-          image.height,
-          0,
-          0,
-          image.width * ratio,
-          image.height * ratio
-        );
-
-        ctx.fillStyle = "white";
-        ctx.font = "48px Verdana";
-        ctx.fillText("Happy Bday", 25, 400);
-        ctx.fillText("Brotha", 55, 500);
+        // var hRatio = canvas.width / image.width;
+        // var vRatio = canvas.height / image.height;
+        // var ratio = Math.min(hRatio, vRatio);
+        // ctx.drawImage(
+        //   image,
+        //   0,
+        //   0,
+        //   image.width,
+        //   image.height,
+        //   0,
+        //   0,
+        //   image.width * ratio,
+        //   image.height * ratio
+        // );
 
         // ctx.clearRect(100, 20, 70, 100);
 
